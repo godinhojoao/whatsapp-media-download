@@ -26,9 +26,6 @@ export class MediaManager {
     })
 
     let desiredFileName = `${authorName} - ${musicName}.${format}`
-    if (desiredFileName.length > 47) {
-      desiredFileName = desiredFileName.substr(0, 47)
-    }
 
     return desiredFileName
   }
@@ -36,10 +33,9 @@ export class MediaManager {
   async downloadAudio (): Promise<string> {
     const desiredFileName = await this.getDesiredFileName('mp3')
 
-    const videoReadableStream = await ytdl(this.link, { filter: 'audioonly' })
+    const videoReadableStream = await ytdl(this.link, { filter: 'audio' })
     const videoWritableStream = await fs.createWriteStream(path.resolve('src/medias', `${desiredFileName}`))
 
-    console.log(path.resolve('medias', `${desiredFileName}`))
     const stream = await videoReadableStream.pipe(videoWritableStream)
 
     await stream.on('finish', () => {
