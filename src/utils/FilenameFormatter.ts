@@ -15,8 +15,9 @@ export class FilenameFormatter {
     }
     this.bannedSignals = [
       '/', '\\', '"', '<', '>', '[', ']', '|', '°', '?', "'", '=', ':', 'vevo', 'video',
-      '(', ')'
+      '(', ')', 'VEVO', 'Video', 'Vevo'
     ]
+    // todo: identify a word indifferently if it is: upper ou lowercase, and put just 1 word on this array
   }
 
   private getSignalsOcurrences (filename: string): OcurrencesMap {

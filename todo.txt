@@ -1,5 +1,4 @@
-[] - Adicionar o `jest` no projeto: atualmente não é possível rodar os testes com `jest` no projeto ( corrigir ).
-[] - Adicioanr uma configuração de build no projeto e um script npm pra isso.
-[] - Levar a quantidade de sinais repetidos em consideração para o nome do arquivo.
+[] - Levar a quantidade de sinais repetidos em consideração para o nome do arquivo, máximo de recorrências de um sinal: 1.
+[] - colocar uma palavra banida somente minusculo e identificar mesmo se tiver com tamanhos de letras diferentes, por ex: bannedSignals = ['vevo'] --> iria banir Vevo, VEVO, veVO, vevo, etc...
 [] - Adicionar envio de vídeos.
 [] - Adicionar configuração para o usuário escolher entre vídeo ou áudio.

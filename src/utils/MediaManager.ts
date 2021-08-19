@@ -19,7 +19,7 @@ export class MediaManager {
 
   async downloadAudio (): Promise<Media> {
     const infos = await ytdl.getInfo(this.link)
-    const fileName = infos.player_response.videoDetails.title.toLowerCase()
+    const fileName = infos.player_response.videoDetails.title
     const filenameFormatter = new FilenameFormatter()
 
     const desiredFileName = filenameFormatter.getDesiredFileName(fileName, 'mp3')
