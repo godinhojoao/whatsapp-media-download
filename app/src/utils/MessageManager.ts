@@ -1,6 +1,5 @@
 import { Client, Message } from '@open-wa/wa-automate'
 import fs from 'fs'
-import path from 'path'
 
 interface VideoInfos {
   isYoutubeLink: boolean;
@@ -24,12 +23,11 @@ export class MessageManager {
     return desiredFormatLink
   }
 
-  async sendAndDeleteMedia (client: Client, message: Message, fileName: string): Promise<void> {
-    const filePath = path.resolve('src/medias', `${fileName}`)
-    await client.sendFile(message.from, filePath, fileName, 'dale')
+  async sendAndDeleteMedia (client: Client, message: Message, filename: string, filePath: string): Promise<void> {
+    await client.sendFile(message.from, filePath, filename, 'dale')
 
-    fs.unlink(path.resolve('medias', `${fileName}`), () => {
-      console.log(`Arquivo ${fileName} excluído com sucesso!`)
+    fs.unlink(filePath, () => {
+      console.log(`Arquivo ${filename} enviado e excluído com sucesso!`)
     })
   }
 }

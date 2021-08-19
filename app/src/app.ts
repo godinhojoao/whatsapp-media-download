@@ -8,16 +8,22 @@ create()
 
     client.onMessage(async message => {
       const videoInfos = messageManager.getVideoID(message.body)
-      if (!videoInfos.isYoutubeLink) {
+
+      if (!videoInfos || !videoInfos.isYoutubeLink) {
         return await client.reply(message.from, 'Envie apenas um link do Youtube!', message.id)
       } else {
         const desiredLinkFormat = messageManager.getDesiredLinkFormat(videoInfos.id)
         const mediaManager = new MediaManager(desiredLinkFormat)
 
-        const fileName = await mediaManager.downloadAudio()
+        mediaManager.downloadAudio()
+          .then(async ({ stream, filename, filePath }) => {
+            stream.on('finish', async () => {
+              console.log(`Download de ( ${filename} ) concluído com sucesso!`)
 
-        console.log('desiredLinkFOrmat', desiredLinkFormat)
-        console.log('filename', fileName)
+              await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
+            })
+          })
+          .catch(error => console.log(error))
       }
     })
   })
