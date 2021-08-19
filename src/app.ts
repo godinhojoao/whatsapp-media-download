@@ -6,11 +6,11 @@ create()
   .then(client => {
     const messageManager = new MessageManager()
 
-    client.onMessage(async message => {
+    client.onMessage(async (message): Promise<void> => {
       const videoInfos = messageManager.getVideoID(message.body)
 
       if (!videoInfos || !videoInfos.isYoutubeLink) {
-        return await client.reply(message.from, 'Envie apenas um link do Youtube!', message.id)
+        await client.reply(message.from, 'Envie apenas um link do Youtube!', message.id)
       } else {
         const desiredLinkFormat = messageManager.getDesiredLinkFormat(videoInfos.id)
         const mediaManager = new MediaManager(desiredLinkFormat)
