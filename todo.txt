@@ -1,4 +1,6 @@
-[] - Levar a quantidade de sinais repetidos em consideração para o nome do arquivo, máximo de recorrências de um sinal: 1.
-[] - colocar uma palavra banida somente minusculo e identificar mesmo se tiver com tamanhos de letras diferentes, por ex: bannedSignals = ['vevo'] --> iria banir Vevo, VEVO, veVO, vevo, etc...
+[] - verificar se a filename ultrapassa uma quantidade determinada de caracteres, se sim
+dar um split e ir removendo as ultimas palavras até ficar td certo
+[] - colocar uma palavra banida somente minusculo e identificarmesmo se tiver com tamanhos de letras
+diferentes, por ex: bannedSignals = ['vevo'] --> iria banir Vevo, VEVO, veVO, vevo, etc...
 [] - Adicionar envio de vídeos.
 [] - Adicionar configuração para o usuário escolher entre vídeo ou áudio.

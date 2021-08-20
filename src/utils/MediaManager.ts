@@ -17,12 +17,12 @@ export class MediaManager {
     this.link = link
   }
 
-  async downloadAudio (): Promise<Media> {
+  public async downloadAudio (): Promise<Media> {
     const infos = await ytdl.getInfo(this.link)
-    const fileName = infos.player_response.videoDetails.title
+    const filename = infos.player_response.videoDetails.title
     const filenameFormatter = new FilenameFormatter()
 
-    const desiredFileName = filenameFormatter.getDesiredFileName(fileName, 'mp3')
+    const desiredFileName = filenameFormatter.getDesiredFilename(filename, 'mp3')
     const filePath = path.resolve(__dirname, '..', 'medias', desiredFileName)
 
     const videoReadableStream = ytdl(this.link, { filter: 'audioonly' })
