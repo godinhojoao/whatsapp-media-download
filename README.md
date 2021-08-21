@@ -1,6 +1,9 @@
 # O que é ?
 
 - Um bot do whatsapp no qual instala midias do youtube recebendo apenas o link.
+- Além de instalar o bot guarda os seguintes dados no arquivo `src/allFilenames.data.json`:
+  - updatedAt: Última vez que alguém baixou uma música utilizando o bot
+  - filenames: Um array que contem os nomes dos arquivos
 
 # Como rodar:
 

@@ -1,44 +1,33 @@
-import { create } from '@open-wa/wa-automate'
+import { create, Client, Message } from '@open-wa/wa-automate'
 import { MessageManager } from './utils/MessageManager'
 import { MediaManager } from './utils/MediaManager'
 
-create()
-  .then(client => {
-    const messageManager = new MessageManager()
+async function processMessage (client: Client, message: Message): Promise<void> {
+  const messageManager = new MessageManager()
 
-    client.onMessage(async (message): Promise<void> => {
-      const currentCommandValue = messageManager.commandsMapper[message.body]
+  const link = await messageManager.handleMessage(client, message)
 
-      if (currentCommandValue) {
-        await client.reply(message.from, currentCommandValue, message.id)
-      } else {
-        const videoInfos = messageManager.getVideoInfos(message.body)
+  if (link) {
+    const mediaManager = new MediaManager(link)
 
-        if (!currentCommandValue && (!videoInfos || !videoInfos.isYoutubeLink || !(videoInfos.id.length >= 11))) {
-          await client.reply(message.from, 'Envie apenas um link do Youtube!', message.id)
-          await client.sendText(
-            message.from,
-            'Para conhecer os formatos de links permitidos digite: !formatos'
-          )
-        } else {
-          await client.sendText(
-            message.from,
-            'Estou começando a baixar a sua música!'
-          )
+    mediaManager.downloadAudio()
+      .then(async ({ stream, filename, filePath }): Promise<void> => {
+        stream.on('finish', async (): Promise<void> => {
+          await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
+          console.log(`Download de ** ${filename} ** concluído com sucesso!`)
+        })
+      })
+      .catch(error => console.log(error))
+  }
+}
 
-          const desiredLinkFormat = messageManager.getDesiredLinkFormat(videoInfos.id)
-          const mediaManager = new MediaManager(desiredLinkFormat)
+async function start (client: Client): Promise<void> {
+  await client.onMessage(message => processMessage(client, message))
+}
 
-          mediaManager.downloadAudio()
-            .then(async ({ stream, filename, filePath }): Promise<void> => {
-              stream.on('finish', async (): Promise<void> => {
-                await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
-                console.log(`Download de ** ${filename} ** concluído com sucesso!`)
-              })
-            })
-            .catch(error => console.log(error))
-        }
-      }
-    })
-  })
+create({
+  authTimeout: 0,
+  callTimeout: 0
+})
+  .then(client => { start(client) })
   .catch(err => console.log(err))

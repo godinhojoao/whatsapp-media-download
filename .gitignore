@@ -3,3 +3,4 @@ logs
 dist
 session.data.json
 __tests__/coverage
+allFilenames.data.json

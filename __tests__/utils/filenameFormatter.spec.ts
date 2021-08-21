@@ -32,4 +32,10 @@ describe('FilenameFormatter calls', () => {
 
     expect(filename).toBe('Turma do Pagode - Lancinho (Ao vivo).mp3')
   })
+
+  it('should call getDesiredFileName passing: teste - :testado:: (-)- (Lyric Video) and receive the expected filename', () => {
+    const filename = filenameFormatter.getDesiredFilename('teste - :testado:: (-)- (Lyric Video)', 'mp3')
+
+    expect(filename).toBe('teste - testado () (Lyric Video).mp3')
+  })
 })

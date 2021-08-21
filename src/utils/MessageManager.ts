@@ -6,20 +6,23 @@ interface VideoInfos {
   id: string;
 }
 
-interface CommandsMapper {
+interface StringMapper {
   [key: string]: string;
 }
 
 export class MessageManager {
-  public readonly commandsMapper: CommandsMapper;
+  private readonly defaultWarnings: StringMapper;
 
   constructor () {
-    this.commandsMapper = {
-      '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4'
+    this.defaultWarnings = {
+      'is-not-link': 'Envie apenas um link do Youtube!',
+      'send-advice': 'Para conhecer os formatos de links permitidos digite: !formatos',
+      '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4',
+      'starting-download': 'Estou começando a baixar a sua música!'
     }
   }
 
-  public getVideoInfos (videoURL: string): VideoInfos {
+  private getVideoInfos (videoURL: string): VideoInfos {
     const youtubeWhatsappLink = videoURL.match(/https:\/\/youtu\.be\/(.*)/)
     const youtubeOriginalLink = videoURL.match(/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(\?\S*)?$/)
     const urlMatches = [youtubeOriginalLink, youtubeWhatsappLink]
@@ -38,10 +41,35 @@ export class MessageManager {
     return { isYoutubeLink: true, id: id }
   }
 
-  public getDesiredLinkFormat (videoID: string): string {
+  private getDesiredLinkFormat (videoID: string): string {
     const desiredFormatLink = 'https://www.youtube.com/watch?v=' + videoID
 
     return desiredFormatLink
+  }
+
+  public async handleMessage (client: Client, message: Message): Promise<string> {
+    const defaultWarnings = this.defaultWarnings
+    const currentCommandValue = defaultWarnings[message.body.trim()]
+
+    if (currentCommandValue) {
+      await client.reply(message.from, currentCommandValue, message.id)
+
+      return ''
+    } else {
+      const videoInfos = this.getVideoInfos(message.body.trim())
+
+      if (!currentCommandValue && (!videoInfos || !videoInfos.isYoutubeLink || !(videoInfos.id.length >= 11))) {
+        await client.reply(message.from, defaultWarnings['is-not-link'], message.id)
+        await client.sendText(message.from, defaultWarnings['send-advice'])
+
+        return ''
+      } else {
+        await client.sendText(message.from, defaultWarnings['starting-download'])
+
+        const desiredLinkFormat = this.getDesiredLinkFormat(videoInfos.id)
+        return desiredLinkFormat
+      }
+    }
   }
 
   public async sendAndDeleteMedia (client: Client, message: Message, filename: string, filePath: string): Promise<void> {

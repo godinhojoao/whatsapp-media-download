@@ -16,14 +16,16 @@ export class FilenameFormatter {
     }
     // todo: identify a word indifferently if it is: upper or lowercase, and put just 1 word on this array
     this.bannedSignals = [
-      '/', '\\', '"', '<', '>', '[', ']', '|', '°', '?', "'", '=', ':', 'vevo', 'video',
-      'VEVO', 'Video', 'Vevo', '*', '.', ';'
+      '/', '\\', '"', '<', '>', '[', ']', '|', '°', '?', "'", '=', ':', 'vevo',
+      'VEVO', 'Vevo', '*', '.', ';'
     ]
+    // mudar para signalsWithOcurrencesLimit
     this.signalsMaxOne = [
-      '-', '&', '(', ')'
+      '-', '&'
     ]
   }
 
+  // this function must be more performatic
   private getSignalsOcurrences (signals: string[], filename: string): OcurrencesMap {
     const signalsOcurrences: OcurrencesMap = {}
     let letter: string
@@ -43,6 +45,22 @@ export class FilenameFormatter {
     return signalsOcurrences
   }
 
+  // this function must be more performatic
+  // add param: maxQuantity and use it to verify
+  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number) {
+    const splitedFilename = filename.split('')
+
+    for (let i = splitedFilename.length - 1; i >= 0; i--) {
+      if (signalOcurrencesQuantity >= 2 && splitedFilename[i] === signal) {
+        splitedFilename.splice(i, 1)
+        signalOcurrencesQuantity--
+      }
+    }
+
+    return splitedFilename.join('')
+  }
+
+  // this function must be more performatic
   private removeAllSignals (filename: string): string {
     const signalsPreferencesMapper = (preferedSignal: string): string => this.signalsPreferences[preferedSignal] || ''
 
@@ -55,19 +73,6 @@ export class FilenameFormatter {
     })
 
     return filename
-  }
-
-  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number) {
-    const splitedFilename = filename.split('')
-
-    for (let i = splitedFilename.length - 1; i >= 0; i--) {
-      if (signalOcurrencesQuantity >= 2 && splitedFilename[i] === signal) {
-        splitedFilename.splice(i, 1)
-        signalOcurrencesQuantity--
-      }
-    }
-
-    return splitedFilename.join('')
   }
 
   public getDesiredFilename (filename: string, format: string): string {

@@ -17,13 +17,33 @@ export class MediaManager {
     this.link = link
   }
 
+  private saveFilename (filename: string): void {
+    const dbPath = path.resolve(__dirname, '..', 'allFilenames.data.json')
+
+    fs.readFile(dbPath, 'utf8', function (err, data) {
+      if (err) { console.log('this file does not exists, yet') }
+
+      const currentDate = new Date().toLocaleString()
+      const filenamesDB = data ? JSON.parse(data) : { updatedAt: '', filenames: [] }
+
+      filenamesDB.updatedAt = currentDate
+      filenamesDB.filenames.push(filename)
+
+      fs.writeFile(dbPath, JSON.stringify(filenamesDB), err => {
+        if (err) { return console.log('error on save filename') }
+      })
+    })
+  }
+
   public async downloadAudio (): Promise<Media> {
     const infos = await ytdl.getInfo(this.link)
-    const filename = infos.player_response.videoDetails.title
+    const videoTitle = infos.player_response.videoDetails.title
     const filenameFormatter = new FilenameFormatter()
 
-    const desiredFileName = filenameFormatter.getDesiredFilename(filename, 'mp3')
+    const desiredFileName = filenameFormatter.getDesiredFilename(videoTitle, 'mp3')
     const filePath = path.resolve(__dirname, '..', 'medias', desiredFileName)
+
+    this.saveFilename(desiredFileName)
 
     const videoReadableStream = ytdl(this.link, { filter: 'audioonly' })
     const videoWritableStream = fs.createWriteStream(filePath)
