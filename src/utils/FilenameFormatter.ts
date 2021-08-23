@@ -3,29 +3,34 @@ interface OcurrencesMap {
 }
 
 interface Map {
-  [key: string]: string | undefined;
+  [key: string]: string;
 }
 
 export class FilenameFormatter {
   private readonly signalsPreferences: Map
   private readonly bannedSignals: string[]
-  private readonly signalsMaxOne: string[]
+  private readonly signalsWithLimit: string[]
+  private readonly signalsLimit: OcurrencesMap
 
   constructor () {
-    this.signalsPreferences = {
-    }
     // todo: identify a word indifferently if it is: upper or lowercase, and put just 1 word on this array
     this.bannedSignals = [
       '/', '\\', '"', '<', '>', '[', ']', '|', '°', '?', "'", '=', ':', 'vevo',
       'VEVO', 'Vevo', '*', '.', ';'
     ]
-    // mudar para signalsWithOcurrencesLimit
-    this.signalsMaxOne = [
-      '-', '&'
+    this.signalsPreferences = {
+      // we can put some signal and the prefered signal to replace it
+      // example --> '&': '>'
+    }
+    this.signalsWithLimit = [
+      '-', '&', '(', ')'
     ]
+    this.signalsLimit = {
+      // we can put some signal and its limits
+      // example --> '&': 2 // default === 1
+    }
   }
 
-  // this function must be more performatic
   private getSignalsOcurrences (signals: string[], filename: string): OcurrencesMap {
     const signalsOcurrences: OcurrencesMap = {}
     let letter: string
@@ -45,13 +50,15 @@ export class FilenameFormatter {
     return signalsOcurrences
   }
 
-  // this function must be more performatic
-  // add param: maxQuantity and use it to verify
-  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number) {
+  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number, limit?: number) {
     const splitedFilename = filename.split('')
 
+    if (!limit) {
+      limit = 1
+    }
+
     for (let i = splitedFilename.length - 1; i >= 0; i--) {
-      if (signalOcurrencesQuantity >= 2 && splitedFilename[i] === signal) {
+      if (signalOcurrencesQuantity > limit && splitedFilename[i] === signal) {
         splitedFilename.splice(i, 1)
         signalOcurrencesQuantity--
       }
@@ -60,7 +67,6 @@ export class FilenameFormatter {
     return splitedFilename.join('')
   }
 
-  // this function must be more performatic
   private removeAllSignals (filename: string): string {
     const signalsPreferencesMapper = (preferedSignal: string): string => this.signalsPreferences[preferedSignal] || ''
 
@@ -76,13 +82,17 @@ export class FilenameFormatter {
   }
 
   public getDesiredFilename (filename: string, format: string): string {
-    const signalsMaxOneOcurrences = this.getSignalsOcurrences(this.signalsMaxOne, filename)
+    const signalsWithLimitOcurrences = this.getSignalsOcurrences(this.signalsWithLimit, filename)
 
-    Object.keys(signalsMaxOneOcurrences).forEach((signal: string): void => {
-      filename = this.removeExtraSignals(filename, signal, signalsMaxOneOcurrences[signal])
+    Object.keys(signalsWithLimitOcurrences).forEach((signal: string): void => {
+      filename = this.removeExtraSignals(filename, signal, signalsWithLimitOcurrences[signal], this.signalsLimit[signal])
     })
 
     filename = this.removeAllSignals(filename)
+
+    if (filename.length > 46) {
+      filename = filename.substr(0, 46)
+    }
 
     return `${filename.trim()}.${format}`
   }

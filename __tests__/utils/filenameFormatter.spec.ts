@@ -36,6 +36,13 @@ describe('FilenameFormatter calls', () => {
   it('should call getDesiredFileName passing: teste - :testado:: (-)- (Lyric Video) and receive the expected filename', () => {
     const filename = filenameFormatter.getDesiredFilename('teste - :testado:: (-)- (Lyric Video)', 'mp3')
 
-    expect(filename).toBe('teste - testado () (Lyric Video).mp3')
+    expect(filename).toBe('teste - testado () Lyric Video.mp3')
+  })
+
+  it('should call getDesiredFileName passing: teste testee testee testee testee testee testee testee and receive the expected filename', () => {
+    const filename = filenameFormatter.getDesiredFilename('teste testee testee testee testee testee testee testee', 'mp3')
+
+    expect(filename.length).toBe(50)
+    expect(filename).toBe('teste testee testee testee testee testee teste.mp3')
   })
 })
