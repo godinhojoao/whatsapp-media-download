@@ -4,20 +4,25 @@ import { MediaManager } from './utils/MediaManager'
 
 async function processMessage (client: Client, message: Message): Promise<void> {
   const messageManager = new MessageManager()
+  const currentCommand = messageManager.commands[message.body.trim()]
 
-  const link = await messageManager.handleMessage(client, message)
+  if (currentCommand) {
+    await client.reply(message.from, currentCommand, message.id)
+  } else {
+    const { link, format } = await messageManager.handleMessage(client, message)
 
-  if (link) {
-    const mediaManager = new MediaManager(link)
+    if (link && format) {
+      const mediaManager = new MediaManager(link)
 
-    mediaManager.downloadAudio()
-      .then(async ({ stream, filename, filePath }): Promise<void> => {
-        stream.on('finish', async (): Promise<void> => {
-          await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
-          console.log(`Download de ** ${filename} ** concluído com sucesso!`)
+      mediaManager.downloadAudio(format)
+        .then(async ({ stream, filename, filePath }): Promise<void> => {
+          stream.on('finish', async (): Promise<void> => {
+            await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
+            console.log(`Download de ** ${filename} ** concluído com sucesso!`)
+          })
         })
-      })
-      .catch(error => console.log(error))
+        .catch(error => console.log(error))
+    }
   }
 }
 
@@ -27,7 +32,8 @@ async function start (client: Client): Promise<void> {
 
 create({
   authTimeout: 0,
-  callTimeout: 0
+  callTimeout: 0,
+  qrTimeout: 0
 })
   .then(client => { start(client) })
   .catch(err => console.log(err))

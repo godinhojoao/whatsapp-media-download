@@ -10,15 +10,25 @@ interface StringMapper {
   [key: string]: string;
 }
 
+interface DownloadInfos {
+  link: string;
+  format: string;
+}
+
 export class MessageManager {
   private readonly defaultWarnings: StringMapper;
+  public readonly commands: StringMapper;
 
   constructor () {
     this.defaultWarnings = {
       'is-not-link': 'Envie apenas um link do Youtube!',
       'send-advice': 'Para conhecer os formatos de links permitidos digite: !formatos',
+      'starting-download': 'Estou começando a baixar a sua mídia, isso pode demorar um pouco!'
+    }
+    this.commands = {
       '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4',
-      'starting-download': 'Estou começando a baixar a sua música!'
+      '!ajuda': `!ajuda: Apresenta os comandos.\n
+                 !formatos: Lista os formatos de link do youtube permitidos.`
     }
   }
 
@@ -47,28 +57,21 @@ export class MessageManager {
     return desiredFormatLink
   }
 
-  public async handleMessage (client: Client, message: Message): Promise<string> {
+  public async handleMessage (client: Client, message: Message): Promise<DownloadInfos> {
     const defaultWarnings = this.defaultWarnings
-    const currentCommandValue = defaultWarnings[message.body.trim()]
+    const videoInfos = this.getVideoInfos(message.body.trim())
 
-    if (currentCommandValue) {
-      await client.reply(message.from, currentCommandValue, message.id)
+    if (!videoInfos || !videoInfos.isYoutubeLink || !(videoInfos.id.length >= 11)) {
+      await client.reply(message.from, defaultWarnings['is-not-link'], message.id)
+      await client.sendText(message.from, defaultWarnings['send-advice'])
 
-      return ''
+      return { link: '', format: '' }
     } else {
-      const videoInfos = this.getVideoInfos(message.body.trim())
+      await client.sendText(message.from, defaultWarnings['starting-download'])
 
-      if (!currentCommandValue && (!videoInfos || !videoInfos.isYoutubeLink || !(videoInfos.id.length >= 11))) {
-        await client.reply(message.from, defaultWarnings['is-not-link'], message.id)
-        await client.sendText(message.from, defaultWarnings['send-advice'])
+      const desiredLinkFormat = this.getDesiredLinkFormat(videoInfos.id)
 
-        return ''
-      } else {
-        await client.sendText(message.from, defaultWarnings['starting-download'])
-
-        const desiredLinkFormat = this.getDesiredLinkFormat(videoInfos.id)
-        return desiredLinkFormat
-      }
+      return { link: desiredLinkFormat, format: 'mp3' }
     }
   }
 

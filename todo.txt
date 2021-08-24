@@ -1,5 +1,4 @@
 [] - colocar uma palavra banida somente minusculo e identificarmesmo se tiver com tamanhos de letras
 diferentes, por ex: bannedSignals = ['vevo'] --> iria banir Vevo, VEVO, veVO, vevo, etc...
-[] - Adicionar envio de vídeos.
-[] - Adicionar configuração para o usuário escolher entre vídeo ou áudio.
-[] - o maximo de tamanho q o zap aceita é 16 mb ver como o nodejs limita isso na hora q ta baixando algo
+
+[] - o maximo de tamanho q o zap aceita é 16 mb ver como o nodejs limita isso na hora q ta baixando algo, se nao posso limitar pela lib ytdl-core

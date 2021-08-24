@@ -1,6 +1,6 @@
 # O que é ?
 
-- Um bot do whatsapp no qual instala midias do youtube recebendo apenas o link.
+- Um bot do whatsapp no qual instala áudios do youtube recebendo apenas o link.
 - Além de instalar o bot guarda os seguintes dados no arquivo `src/allFilenames.data.json`:
   - updatedAt: Última vez que alguém baixou uma música utilizando o bot
   - filenames: Um array que contem os nomes dos arquivos
@@ -14,3 +14,5 @@
 # Como utilizar:
 
 1 - Envie o link de uma música do youtube no whatsapp para o número que scaneou o código
+
+2 - Ou envie o comando: !ajuda para o bot listar os comandos possíveis e modos de uso.
