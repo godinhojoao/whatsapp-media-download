@@ -4,3 +4,8 @@ dist
 session.data.json
 __tests__/coverage
 allFilenames.data.json
+
+# managed by open-wa
+**.data.json
+**.node-persist**
+# end managed by open-wa

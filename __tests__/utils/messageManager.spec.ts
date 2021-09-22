@@ -46,7 +46,7 @@ describe('MessageManager calls', () => {
   })
 
   it('should read commandsMapper passing: !formatos command and receive the expected sentence', () => {
-    const sentence = messageManager['defaultWarnings']['!formatos']
+    const sentence = messageManager['commands']['!formatos']
 
     expect(sentence).toBe('Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4')
   })

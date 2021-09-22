@@ -26,9 +26,7 @@ export class MessageManager {
       'starting-download': 'Estou começando a baixar a sua mídia, isso pode demorar um pouco!'
     }
     this.commands = {
-      '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4',
-      '!ajuda': `!ajuda: Apresenta os comandos.\n
-                 !formatos: Lista os formatos de link do youtube permitidos.`
+      '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4'
     }
   }
 
