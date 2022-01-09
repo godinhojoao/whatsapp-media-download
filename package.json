@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start-dev": "nodemon --watch 'src/' --exec 'ts-node src/app.ts' -e ts",
-    "start-prod": "node dist/app.js",
+    "start-prod": "tsc && node dist/app.js",
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "npx eslint ."
   },
   "dependencies": {
     "@open-wa/wa-automate": "^4.28.6",
