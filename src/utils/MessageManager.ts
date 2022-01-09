@@ -21,12 +21,11 @@ export class MessageManager {
 
   constructor () {
     this.defaultWarnings = {
-      'is-not-link': 'Envie apenas um link do Youtube!',
-      'send-advice': 'Para conhecer os formatos de links permitidos digite: !formatos',
+      'is-not-link': 'Envie apenas um link do Youtube! \n\nPara conhecer os formatos de links permitidos digite: !formatos',
       'starting-download': 'Estou começando a baixar a sua mídia, isso pode demorar um pouco!'
     }
     this.commands = {
-      '!formatos': 'Os exemplos são: \n 1 - https://youtu.be/oZgYN4qfpl4 \n 2 - https://www.youtube.com/watch?v=oZgYN4qfpl4'
+      '!formatos': 'Os exemplos são: \n1 - https://youtu.be/oZgYN4qfpl4 \n2 - https://www.youtube.com/watch?v=oZgYN4qfpl4'
     }
   }
 
@@ -61,7 +60,6 @@ export class MessageManager {
 
     if (!videoInfos || !videoInfos.isYoutubeLink || !(videoInfos.id.length >= 11)) {
       await client.reply(message.from, defaultWarnings['is-not-link'], message.id)
-      await client.sendText(message.from, defaultWarnings['send-advice'])
 
       return { link: '', format: '' }
     } else {
@@ -74,10 +72,11 @@ export class MessageManager {
   }
 
   public async sendAndDeleteMedia (client: Client, message: Message, filename: string, filePath: string): Promise<void> {
-    await client.sendFile(message.from, filePath, filename, '')
-
-    fs.unlink(filePath, () => {
-      console.log(`Arquivo ** ${filename} ** enviado e excluído com sucesso!`)
-    })
+    client.sendFile(message.from, filePath, filename, '')
+      .then(() => {
+        fs.unlink(filePath, () => {
+          console.log(`Arquivo ** ${filename} ** enviado e excluído com sucesso!`)
+        })
+      })
   }
 }

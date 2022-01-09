@@ -18,7 +18,6 @@ async function processMessage (client: Client, message: Message): Promise<void> 
         .then(async ({ stream, filename, filePath }): Promise<void> => {
           stream.on('finish', async (): Promise<void> => {
             await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
-            console.log(`Download de ** ${filename} ** concluído com sucesso!`)
           })
         })
         .catch(error => console.log(error))
@@ -27,7 +26,7 @@ async function processMessage (client: Client, message: Message): Promise<void> 
 }
 
 async function start (client: Client): Promise<void> {
-  await client.onMessage(message => processMessage(client, message))
+  await client.onMessage(async (message) => await processMessage(client, message))
 }
 
 create({

@@ -20,6 +20,10 @@ export class MediaManager {
   private saveFilename (filename: string): void {
     const dbPath = path.resolve(__dirname, '..', 'allFilenames.data.json')
 
+    if (!fs.existsSync(dbPath)) {
+      fs.writeFileSync(dbPath, '')
+    }
+
     fs.readFile(dbPath, 'utf8', function (err, data) {
       if (err) { console.log('this file does not exists, yet') }
 
@@ -29,7 +33,7 @@ export class MediaManager {
       filenamesDB.updatedAt = currentDate
       filenamesDB.filenames.push(filename)
 
-      fs.writeFile(dbPath, JSON.stringify(filenamesDB), err => {
+      fs.writeFile(dbPath, JSON.stringify(filenamesDB, null, 2), err => {
         if (err) { return console.log('error on save filename') }
       })
     })
@@ -47,6 +51,10 @@ export class MediaManager {
 
     const filter = format === 'mp3' ? 'audioonly' : 'videoandaudio'
     const videoReadableStream = ytdl(this.link, { filter: filter })
+
+    if (!fs.existsSync(path.resolve(__dirname, '..', 'medias'))) {
+      fs.mkdirSync(path.resolve(__dirname, '..', 'medias'))
+    }
     const videoWritableStream = fs.createWriteStream(filePath)
 
     const stream = videoReadableStream.pipe(videoWritableStream)
