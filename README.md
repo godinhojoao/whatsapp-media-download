@@ -5,25 +5,26 @@
   - updatedAt: Última vez que alguém baixou uma música utilizando o bot
   - filenames: Um array que contem os nomes dos arquivos
 
-
 # Como rodar em desenvolvimento:
 
 ## Antes de rodar você precisa criar uma pasta vazia "medias" dentro de /dist.
 
-- 1 - `nvm use`
-- 2 - `npm i`
-- 3 - `npm run start-dev`
-- 4 - Scaneie o qrCode que irá aparecer no seu terminal **com um whatsapp**
+- 1 - `nvm install 16`
+- 2 - `nvm use`
+- 3 - `npm i`
+- 4 - `npm run start-dev`
+- 5 - Scaneie o qrCode que irá aparecer no seu terminal **com um whatsapp**
 
 # Como rodar em "produção":
 
 ## Antes de rodar você precisa criar uma pasta vazia "medias" dentro de /src.
 
-- 1 - `nvm use`
-- 2 - `npm i`
-- 3 - `npm run build`
-- 4 - `npm run start-prod`
-- 5 - Scaneie o qrCode que irá aparecer no seu terminal **com um whatsapp**
+- 1 - `nvm install 16`
+- 2 - `nvm use`
+- 3 - `npm i`
+- 4 - `npm run build`
+- 5 - `npm run start-prod`
+- 6 - Scaneie o qrCode que irá aparecer no seu terminal **com um whatsapp**
 
 # Como utilizar:
 

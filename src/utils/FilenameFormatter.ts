@@ -1,19 +1,12 @@
-interface OcurrencesMap {
-  [key: string]: number;
-}
+import { IFilenameFormatter, Map, OcurrencesMap } from '../interfaces'
 
-interface Map {
-  [key: string]: string;
-}
-
-export class FilenameFormatter {
+export class FilenameFormatter implements IFilenameFormatter {
   private readonly signalsPreferences: Map
   private readonly bannedSignals: string[]
   private readonly signalsWithLimit: string[]
   private readonly signalsLimit: OcurrencesMap
 
   constructor () {
-    // todo: identify a word indifferently if it is: upper or lowercase, and put just 1 word on this array
     this.bannedSignals = [
       '/', '\\', '"', '<', '>', '[', ']', '|', '°', '?', "'", '=', ':', 'vevo',
       'VEVO', 'Vevo', '*', '.', ';'
@@ -50,7 +43,7 @@ export class FilenameFormatter {
     return signalsOcurrences
   }
 
-  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number, limit?: number) {
+  private removeExtraSignals (filename: string, signal: string, signalOcurrencesQuantity: number, limit?: number): string {
     const splitedFilename = filename.split('')
 
     if (!limit) {

@@ -3,14 +3,9 @@ import fs from 'fs'
 import path from 'path'
 
 import { FilenameFormatter } from './FilenameFormatter'
+import { Media, IMediaManager } from '../interfaces'
 
-interface Media {
-  stream: fs.WriteStream;
-  filename: string;
-  filePath: string;
-}
-
-export class MediaManager {
+export class MediaManager implements IMediaManager {
   constructor (
     private readonly link: string
   ) {
@@ -39,18 +34,17 @@ export class MediaManager {
     })
   }
 
-  public async downloadAudio (format: string): Promise<Media> {
+  public async downloadAudio (): Promise<Media> {
     const infos = await ytdl.getInfo(this.link)
     const videoTitle = infos.player_response.videoDetails.title
     const filenameFormatter = new FilenameFormatter()
 
-    const desiredFileName = filenameFormatter.getDesiredFilename(videoTitle, format)
+    const desiredFileName = filenameFormatter.getDesiredFilename(videoTitle, 'mp3')
     const filePath = path.resolve(__dirname, '..', 'medias', desiredFileName)
 
     this.saveFilename(desiredFileName)
 
-    const filter = format === 'mp3' ? 'audioonly' : 'videoandaudio'
-    const videoReadableStream = ytdl(this.link, { filter: filter })
+    const videoReadableStream = ytdl(this.link, { filter: 'audioonly' })
 
     if (!fs.existsSync(path.resolve(__dirname, '..', 'medias'))) {
       fs.mkdirSync(path.resolve(__dirname, '..', 'medias'))

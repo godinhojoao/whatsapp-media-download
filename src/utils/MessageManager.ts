@@ -1,19 +1,6 @@
 import { Client, Message } from '@open-wa/wa-automate'
+import { DownloadInfos, StringMapper, videoInfos } from '../interfaces'
 import fs from 'fs'
-
-interface VideoInfos {
-  isYoutubeLink: boolean;
-  id: string;
-}
-
-interface StringMapper {
-  [key: string]: string;
-}
-
-interface DownloadInfos {
-  link: string;
-  format: string;
-}
 
 export class MessageManager {
   private readonly defaultWarnings: StringMapper;
@@ -29,7 +16,7 @@ export class MessageManager {
     }
   }
 
-  private getVideoInfos (videoURL: string): VideoInfos {
+  private getVideoInfos (videoURL: string): videoInfos {
     const youtubeWhatsappLink = videoURL.match(/https:\/\/youtu\.be\/(.*)/)
     const youtubeOriginalLink = videoURL.match(/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(\?\S*)?$/)
     const urlMatches = [youtubeOriginalLink, youtubeWhatsappLink]

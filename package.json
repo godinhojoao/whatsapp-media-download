@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@open-wa/wa-automate": "^4.28.6",
-    "ytdl-core": "^4.9.2"
+    "ytdl-core": "^4.10.0"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",

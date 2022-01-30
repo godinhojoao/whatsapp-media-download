@@ -14,7 +14,7 @@ async function processMessage (client: Client, message: Message): Promise<void> 
     if (link && format) {
       const mediaManager = new MediaManager(link)
 
-      mediaManager.downloadAudio(format)
+      mediaManager.downloadAudio()
         .then(async ({ stream, filename, filePath }): Promise<void> => {
           stream.on('finish', async (): Promise<void> => {
             await messageManager.sendAndDeleteMedia(client, message, filename, filePath)
